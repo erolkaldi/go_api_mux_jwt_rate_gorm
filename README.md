@@ -1,6 +1,6 @@
 # go_api_mux_jwt_rate_gorm
 
-This project is a tryout for my go learning process
+This project is a tryout for my go learning progress
 
 It contains an api which uses mux,jwt,gorm,rate etc.
 
