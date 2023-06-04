@@ -14,9 +14,10 @@ import (
 )
 
 type App struct {
-	Router *mux.Router
-	Db     *gorm.DB
-	Config *models.Config
+	Router      *mux.Router
+	Db          *gorm.DB
+	Config      *models.Config
+	RateLimiter *middleware.RateLimiterStore
 }
 
 func (app *App) InitializeDB() bool {
@@ -31,9 +32,11 @@ func (app *App) InitializeDB() bool {
 	if err != nil {
 		log.Fatal(err)
 		return false
-	} else {
-		return true
 	}
+
+	app.RateLimiter = middleware.NewRateLimiterStore()
+
+	return true
 
 }
 
@@ -43,7 +46,7 @@ func getConnectionString(config *models.Config) string {
 func (a *App) Routes() {
 	a.Router = mux.NewRouter()
 	userApi := api.InitializeUserApi(a.Db)
-	a.Router.Handle("/user/{id:[0-9]+}", middleware.RateCheckLimit(middleware.AuthMiddleware(userApi.GetUserById()))).Methods("GET")
+	a.Router.Handle("/user/{id:[0-9]+}", a.RateLimiter.RateCheckLimit(middleware.AuthMiddleware(userApi.GetUserById()))).Methods("GET")
 	a.Router.Handle("/user", middleware.AuthMiddleware(userApi.CreateUser())).Methods("POST")
 	a.Router.HandleFunc("/login", userApi.Login()).Methods("POST")
 }
