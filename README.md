@@ -21,6 +21,7 @@ folder structure,
 
 Added viper and yaml
 Removed .env and get config parameters from yaml with viper
+
 Added ip control to rate limit
 
 I will keep adding new usings and features
