@@ -22,5 +22,5 @@ folder structure,
 Added viper and yaml
 Removed .env and get config parameters from yaml with viper
 
-I will add new usings and features soon
+I will keep adding new usings and features
 
