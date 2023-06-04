@@ -47,8 +47,8 @@ func (a *App) Routes() {
 	a.Router = mux.NewRouter()
 	userApi := api.InitializeUserApi(a.Db)
 	a.Router.Handle("/user/{id:[0-9]+}", a.RateLimiter.RateCheckLimit(middleware.AuthMiddleware(userApi.GetUserById()))).Methods("GET")
-	a.Router.Handle("/user", middleware.AuthMiddleware(userApi.CreateUser())).Methods("POST")
-	a.Router.HandleFunc("/login", userApi.Login()).Methods("POST")
+	a.Router.Handle("/user", a.RateLimiter.RateCheckLimit(middleware.AuthMiddleware(userApi.CreateUser()))).Methods("POST")
+	a.Router.Handle("/login", a.RateLimiter.RateCheckLimit(userApi.Login())).Methods("POST")
 }
 
 func (a *App) Run() {
