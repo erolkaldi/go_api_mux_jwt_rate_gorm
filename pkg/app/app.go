@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/erolkaldi/agency/pkg/api"
 	"github.com/erolkaldi/agency/pkg/middleware"
+	"github.com/erolkaldi/agency/pkg/models"
 	"github.com/gorilla/mux"
-	"github.com/joho/godotenv"
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 )
@@ -17,14 +16,13 @@ import (
 type App struct {
 	Router *mux.Router
 	Db     *gorm.DB
+	Config *models.Config
 }
 
 func (app *App) InitializeDB() bool {
-	er := godotenv.Load()
-	if er != nil {
-		panic("Environment not loaded")
-	}
-	connectionString := getConnectionString()
+	app.Config = &models.Config{}
+	app.Config.GetConfigValues()
+	connectionString := getConnectionString(app.Config)
 	println(connectionString)
 	var err error
 	var dial = sqlserver.Open(connectionString)
@@ -39,8 +37,8 @@ func (app *App) InitializeDB() bool {
 
 }
 
-func getConnectionString() string {
-	return fmt.Sprintf("server=" + os.Getenv("SERVER") + ";user id=" + os.Getenv("USER_ID") + ";password=" + os.Getenv("PASSWORD") + ";database=" + os.Getenv("DB") + ";")
+func getConnectionString(config *models.Config) string {
+	return fmt.Sprintf("server=" + config.SqlServer.Server + ";user id=" + config.SqlServer.User + ";password=" + config.SqlServer.Password + ";database=" + config.SqlServer.DbName + ";")
 }
 func (a *App) Routes() {
 	a.Router = mux.NewRouter()
@@ -51,7 +49,6 @@ func (a *App) Routes() {
 }
 
 func (a *App) Run() {
-	port := os.Getenv("PORT")
-	fmt.Printf("Server started at %s\n", port)
-	log.Fatal(http.ListenAndServe(port, a.Router))
+	fmt.Printf("Server started at %s\n", a.Config.Api.Port)
+	log.Fatal(http.ListenAndServe(a.Config.Api.Port, a.Router))
 }

@@ -1,0 +1,10 @@
+local:
+  sqlserver:
+    server: ".\\SQL19"
+    dbname: "GoDB"
+    user: "sa"
+    password: "1"
+  api:
+    port: ":7071"
+  jwt:
+    secret: "blablablafalanfilanintermilan**_?4406"
