@@ -6,5 +6,6 @@ local:
     password: "1"
   api:
     port: ":7071"
+    appkeys: ["HeaderAppKey1","HeaderAppKey2"]
   jwt:
     secret: "blablablafalanfilanintermilan**_?4406"

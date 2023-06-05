@@ -18,7 +18,8 @@ type SqlServer struct {
 }
 
 type Api struct {
-	Port string `yaml:"port"`
+	Port    string   `yaml:"port"`
+	AppKeys []string `yaml:"appkeys"`
 }
 
 type JWT struct {
