@@ -20,6 +20,7 @@ folder structure,
 04.06.2023
 
 Added viper and yaml
+
 Removed .env and get config parameters from yaml with viper
 
 Modified ratelimiting with ip based limitting
