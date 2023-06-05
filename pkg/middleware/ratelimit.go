@@ -11,7 +11,6 @@ import (
 
 type RateLimiter struct {
 	limiter *rate.Limiter
-	last    time.Time
 }
 
 type RateLimiterStore struct {
