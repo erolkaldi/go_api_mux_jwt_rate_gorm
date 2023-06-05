@@ -24,5 +24,9 @@ Removed .env and get config parameters from yaml with viper
 
 Modified ratelimiting with ip based limitting
 
+05.06.2023
+
+Added AppKey header authorization
+
 I will keep adding new usings and features
 
