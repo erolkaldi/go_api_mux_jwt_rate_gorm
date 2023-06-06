@@ -9,3 +9,8 @@ local:
     appkeys: ["HeaderAppKey1","HeaderAppKey2"]
   jwt:
     secret: "blablablafalanfilanintermilan**_?4406"
+  smtp:
+    host: "smtp.gmail.com"
+    email: "kaldi.erol@gmail.com"
+    password: "zfehjhewiapbgkij"
+

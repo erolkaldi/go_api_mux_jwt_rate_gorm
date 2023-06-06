@@ -9,7 +9,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func GenerateToken(user models.User) (models.TokenDto, error) {
+func GenerateToken(user models.User) (models.Token, error) {
 	expiration := time.Now().Add(time.Hour * 7)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"email":      user.Email,
@@ -21,9 +21,9 @@ func GenerateToken(user models.User) (models.TokenDto, error) {
 	access_token, err := token.SignedString([]byte(secret))
 	if err != nil {
 		println("******" + err.Error() + "*******")
-		return models.TokenDto{}, err
+		return models.Token{}, err
 	}
-	return models.TokenDto{Access_Token: access_token, Expiration: expiration}, nil
+	return models.Token{Access_Token: access_token, Expiration: expiration}, nil
 }
 func ValidateToken(access_token string) (jwt.Claims, error) {
 	signingKey := []byte(os.Getenv("JWT_SECRET"))

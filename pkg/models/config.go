@@ -8,6 +8,7 @@ type Config struct {
 	SqlServer SqlServer `yaml:"sqlserver"`
 	Api       Api       `yaml:"api"`
 	Jwt       JWT       `yaml:"jwt"`
+	Smtp      Smtp      `yaml:"smtp"`
 }
 
 type SqlServer struct {
@@ -24,6 +25,12 @@ type Api struct {
 
 type JWT struct {
 	SecretKey string `yaml:"secret"`
+}
+
+type Smtp struct {
+	Host     string `yaml:"host"`
+	Email    string `yaml:"email"`
+	Password string `yaml:"password"`
 }
 
 func (config *Config) GetConfigValues() {

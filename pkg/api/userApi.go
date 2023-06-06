@@ -18,11 +18,13 @@ type UserApi struct {
 	db      *gorm.DB
 }
 
-func InitializeUserApi(db *gorm.DB) *UserApi {
+func InitializeUserApi(db *gorm.DB, smtp *models.Smtp) *UserApi {
 	repository := repository.Initialize(db)
-	service := service.InitializeUserService(repository)
-	userApi := UserApi{service: service}
+	userService := service.InitializeUserService(repository)
+	outbox := service.InitializeOutboxService(repository, smtp)
+	userApi := UserApi{service: userService}
 	userApi.Migrate()
+	go outbox.OutboxPooling(repository, smtp)
 	return &userApi
 }
 
@@ -54,7 +56,7 @@ func (api *UserApi) GetUserById() http.HandlerFunc {
 func (api *UserApi) Login() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		var loginDto models.LoginDto
+		var loginDto models.Login
 
 		decoder := json.NewDecoder(r.Body)
 		if err := decoder.Decode(&loginDto); err != nil {
@@ -101,5 +103,23 @@ func (api *UserApi) CreateUser() http.HandlerFunc {
 		}
 
 		RespondWithJSON(w, http.StatusOK, createdUser)
+	}
+}
+
+func (api *UserApi) RegisterUser() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		var register models.Register
+
+		decoder := json.NewDecoder(r.Body)
+		if err := decoder.Decode(&register); err != nil {
+			RespondWithError(w, http.StatusBadRequest, err.Error())
+			return
+		}
+		defer r.Body.Close()
+
+		response := api.service.RegisterUser(&register)
+
+		RespondWithJSON(w, http.StatusOK, response)
 	}
 }

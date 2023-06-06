@@ -45,17 +45,18 @@ func getConnectionString(config *models.Config) string {
 }
 func (a *App) Routes() {
 	a.Router = mux.NewRouter()
-	userApi := api.InitializeUserApi(a.Db)
+	userApi := api.InitializeUserApi(a.Db, &a.Config.Smtp)
 	a.Router.Handle("/user/{id:[0-9]+}", a.authorizeRequest(userApi.GetUserById(), userApi, true)).Methods("GET")
 	a.Router.Handle("/user", a.authorizeRequest(userApi.CreateUser(), userApi, true)).Methods("POST")
 	a.Router.Handle("/login", a.authorizeRequest(userApi.Login(), userApi, false)).Methods("POST")
+	a.Router.Handle("/register", a.authorizeRequest(userApi.RegisterUser(), userApi, false)).Methods("POST")
 }
 
 func (a *App) authorizeRequest(next http.Handler, userApi *api.UserApi, tokened bool) http.Handler {
 	if tokened {
 		return a.RateLimiter.RateCheckLimit(middleware.AppKeyAuthorization(middleware.AuthMiddleware(next), &a.Config.Api))
 	} else {
-		return a.RateLimiter.RateCheckLimit(middleware.AppKeyAuthorization(userApi.Login(), &a.Config.Api))
+		return a.RateLimiter.RateCheckLimit(middleware.AppKeyAuthorization(next, &a.Config.Api))
 	}
 }
 
