@@ -41,5 +41,7 @@ Smtp mailing added
 
 Outbox pattern added for mailing
 
+Email validation and confirm control added
+
 I will keep adding new usings and features
 
