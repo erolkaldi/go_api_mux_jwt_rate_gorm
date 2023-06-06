@@ -15,6 +15,10 @@ JWT Auth,
 rate limiting,
 middleware,
 folder structure,
+viper,
+yaml,
+smtp,
+outbox
 
 
 04.06.2023
@@ -28,6 +32,14 @@ Modified ratelimiting with ip based limitting
 05.06.2023
 
 Added AppKey header authorization
+
+06.06.2023
+
+Register user added
+
+Smtp mailing added
+
+Outbox pattern added for mailing
 
 I will keep adding new usings and features
 
