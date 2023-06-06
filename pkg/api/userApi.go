@@ -53,6 +53,34 @@ func (api *UserApi) GetUserById() http.HandlerFunc {
 		RespondWithJSON(w, http.StatusOK, post)
 	}
 }
+func (api *UserApi) ConfirmEmail() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		vars := mux.Vars(r)
+		id, err := strconv.Atoi(vars["id"])
+		if err != nil {
+			RespondWithError(w, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		post, err := api.service.GetUserById(id)
+		if err != nil {
+			RespondWithError(w, http.StatusNotFound, err.Error())
+			return
+		}
+
+		post.EmailConfirmed = true
+		_, err = api.service.SaveUser(post)
+		if err != nil {
+			RespondWithError(w, http.StatusNotFound, err.Error())
+			return
+		}
+		respone := "Email confirmed.Thank you"
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(respone))
+	}
+}
 func (api *UserApi) Login() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -70,11 +98,14 @@ func (api *UserApi) Login() http.HandlerFunc {
 			RespondWithError(w, http.StatusNotFound, "User not found")
 			return
 		}
+		if user.EmailConfirmed != true {
+			RespondWithError(w, http.StatusBadRequest, "Email not confirmed")
+			return
+		}
 		if user.Password != loginDto.Password {
 			RespondWithError(w, http.StatusBadRequest, "Password is wrong")
 			return
 		}
-
 		tokenDto, er := service.GenerateToken(*user)
 		if er != nil {
 			RespondWithError(w, http.StatusInternalServerError, "Could not create token")

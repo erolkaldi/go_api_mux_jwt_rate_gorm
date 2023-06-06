@@ -52,6 +52,6 @@ func (outboxService *OutboxService) OutboxPooling(rp *repository.Repository, smt
 				}
 			}
 		}
-		time.Sleep(2 * time.Minute)
+		time.Sleep(5 * time.Minute)
 	}
 }

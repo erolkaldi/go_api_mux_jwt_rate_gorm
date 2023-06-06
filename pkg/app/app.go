@@ -50,6 +50,7 @@ func (a *App) Routes() {
 	a.Router.Handle("/user", a.authorizeRequest(userApi.CreateUser(), userApi, true)).Methods("POST")
 	a.Router.Handle("/login", a.authorizeRequest(userApi.Login(), userApi, false)).Methods("POST")
 	a.Router.Handle("/register", a.authorizeRequest(userApi.RegisterUser(), userApi, false)).Methods("POST")
+	a.Router.HandleFunc("/confirm/{id:[0-9]+}", userApi.ConfirmEmail()).Methods("GET")
 }
 
 func (a *App) authorizeRequest(next http.Handler, userApi *api.UserApi, tokened bool) http.Handler {
