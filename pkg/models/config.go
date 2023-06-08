@@ -19,8 +19,9 @@ type SqlServer struct {
 }
 
 type Api struct {
-	Port    string   `yaml:"port"`
-	AppKeys []string `yaml:"appkeys"`
+	Port          string   `yaml:"port"`
+	AppKeys       []string `yaml:"appkeys"`
+	RatePerMinute int      `yaml:"rateperminute"`
 }
 
 type JWT struct {
@@ -41,7 +42,7 @@ func (config *Config) GetConfigValues() {
 	v.AddConfigPath("./resources")
 	err := v.ReadInConfig()
 	if err != nil {
-		panic("Config not found")
+		panic("Config not found :\r\n" + err.Error())
 	}
 	sub := v.Sub("local")
 	unMarshallErr := sub.Unmarshal(config)

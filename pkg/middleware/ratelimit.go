@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net"
 	"net/http"
 	"sync"
@@ -20,11 +21,11 @@ type RateLimiterStore struct {
 	mu       sync.Mutex
 }
 
-func NewRateLimiterStore() *RateLimiterStore {
+func NewRateLimiterStore(cap int) *RateLimiterStore {
 	return &RateLimiterStore{
 		store:    make(map[string]*RateLimiter),
 		duration: 1 * time.Minute,
-		capacity: 100,
+		capacity: cap,
 	}
 }
 
@@ -49,11 +50,12 @@ func (s *RateLimiterStore) RateCheckLimit(next http.Handler) http.Handler {
 		limiter := s.getLimiter(ip)
 
 		if !limiter.Allow() {
+			fmt.Println(ip + " blocked")
 			w.WriteHeader(http.StatusTooManyRequests)
 			w.Write([]byte("You exceeded your rate limit"))
 			return
 		}
-
+		fmt.Println(ip + ":" + r.RequestURI)
 		next.ServeHTTP(w, r)
 	})
 }

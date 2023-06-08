@@ -4,7 +4,7 @@ import (
 	"github.com/erolkaldi/agency/pkg/models"
 )
 
-func (rp *Repository) MigrateUser() error {
+func (rp *Repository) Migrate() error {
 	return rp.db.AutoMigrate(&models.User{}, &models.OutBox{})
 }
 

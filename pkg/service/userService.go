@@ -13,8 +13,8 @@ func InitializeUserService(repository *repository.Repository) *UserService {
 	return &UserService{repository: repository}
 }
 
-func (s *UserService) MigrateUser() error {
-	return s.repository.MigrateUser()
+func (s *UserService) Migrate() error {
+	return s.repository.Migrate()
 }
 func (service *UserService) GetUserById(id int) (*models.User, error) {
 	return service.repository.GetUserById(id)
@@ -29,19 +29,19 @@ func (s *UserService) SaveUser(user *models.User) (*models.User, error) {
 func (s *UserService) UpdateUser(user *models.User) (*models.User, error) {
 	return s.repository.SaveUser(user)
 }
-func (s *UserService) RegisterUser(register *models.Register) *models.Response {
+func (s *UserService) RegisterUser(register *models.Register) *models.ResponseMessage {
 	register.Password = HashPassword(register.Password)
 	user := models.User{Name: register.Name, Email: register.Email, Password: register.Password}
 	returnUser, err := s.repository.SaveUser(&user)
 	if err != nil {
-		return &models.Response{IsSuccessfull: false, Message: err.Error()}
+		return &models.ResponseMessage{IsSuccessfull: false, Message: err.Error()}
 	}
 	email := CreateRegisterEmail(returnUser)
 
 	_, err = CreateOutBox(JsonToString(email), s.repository)
 	if err != nil {
-		return &models.Response{IsSuccessfull: false, Message: err.Error()}
+		return &models.ResponseMessage{IsSuccessfull: false, Message: err.Error()}
 	}
 
-	return &models.Response{IsSuccessfull: true, Message: "OK"}
+	return &models.ResponseMessage{IsSuccessfull: true, Message: "OK"}
 }

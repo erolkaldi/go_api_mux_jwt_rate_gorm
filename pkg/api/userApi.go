@@ -29,7 +29,7 @@ func InitializeUserApi(db *gorm.DB, smtp *models.Smtp) *UserApi {
 }
 
 func (api *UserApi) Migrate() {
-	err := api.service.MigrateUser()
+	err := api.service.Migrate()
 	if err != nil {
 		log.Println(err)
 	}

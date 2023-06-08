@@ -7,6 +7,7 @@ local:
   api:
     port: ":7071"
     appkeys: ["HeaderAppKey1","HeaderAppKey2"]
+    rateperminute: "100"
   jwt:
     secret: "blablablafalanfilanintermilan**_?4406"
   smtp:

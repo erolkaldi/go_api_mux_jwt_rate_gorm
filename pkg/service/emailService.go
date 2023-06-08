@@ -31,8 +31,9 @@ func SendEmail(mail models.Email, smtpInfo models.Smtp) error {
 	emailBody.WriteString("\r\n" + mail.Body)
 	err := smtp.SendMail(smtpInfo.Host+":"+strconv.Itoa(587), auth, smtpInfo.Email, []string{mail.To}, []byte(emailBody.String()))
 	if err != nil {
+		fmt.Println("Email Send Failed To:" + mail.To)
 		return err
 	}
-
+	fmt.Println("Email Send Succeeded To:" + mail.To)
 	return nil
 }
