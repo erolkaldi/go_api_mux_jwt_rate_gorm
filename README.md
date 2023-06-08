@@ -43,5 +43,11 @@ Outbox pattern added for mailing
 
 Email validation and confirm control added
 
+08.06.2023
+
+Token expiration handled
+
+Password hashing and validation added
+
 I will keep adding new usings and features
 
