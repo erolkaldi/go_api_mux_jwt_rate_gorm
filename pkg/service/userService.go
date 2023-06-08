@@ -23,9 +23,14 @@ func (service *UserService) GetUserByEmail(email string) (*models.User, error) {
 	return service.repository.GetUserByEmail(email)
 }
 func (s *UserService) SaveUser(user *models.User) (*models.User, error) {
+	user.Password = HashPassword(user.Password)
+	return s.repository.SaveUser(user)
+}
+func (s *UserService) UpdateUser(user *models.User) (*models.User, error) {
 	return s.repository.SaveUser(user)
 }
 func (s *UserService) RegisterUser(register *models.Register) *models.Response {
+	register.Password = HashPassword(register.Password)
 	user := models.User{Name: register.Name, Email: register.Email, Password: register.Password}
 	returnUser, err := s.repository.SaveUser(&user)
 	if err != nil {

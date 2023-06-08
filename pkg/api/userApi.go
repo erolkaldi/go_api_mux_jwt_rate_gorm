@@ -70,7 +70,7 @@ func (api *UserApi) ConfirmEmail() http.HandlerFunc {
 		}
 
 		post.EmailConfirmed = true
-		_, err = api.service.SaveUser(post)
+		_, err = api.service.UpdateUser(post)
 		if err != nil {
 			RespondWithError(w, http.StatusNotFound, err.Error())
 			return
@@ -102,7 +102,7 @@ func (api *UserApi) Login() http.HandlerFunc {
 			RespondWithError(w, http.StatusBadRequest, "Email not confirmed")
 			return
 		}
-		if user.Password != loginDto.Password {
+		if !service.ValidatePassword(loginDto.Password, user.Password) {
 			RespondWithError(w, http.StatusBadRequest, "Password is wrong")
 			return
 		}
